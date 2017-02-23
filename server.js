@@ -5,6 +5,7 @@ const vm = require('vm');
 
 const express = require('express');
 const multer  = require('multer');
+const requireFromString = require('require-from-string');
 const xlsx = require('xlsx');
 
 const PORT = 80;
@@ -39,37 +40,46 @@ express()
 /* ------------------ Simulation ----------------------- */
 
 function processJSON(data, itNb, input, mapFunction, output, reduceFunction) {
+	const sandbox = {};
+	vm.createContext(sandbox);
 
-	// we set up a context for each entry while appending inputs variables
-	console.log('Setting up context for each entry.');
+	console.log('Appending input variables to each entry.');
 	data.map(function(entry, index, array) {
 		for(var key of Object.keys(input))
 			entry[key] = input[key];
-		vm.createContext(entry);
 	});
 
-	// we run the map function on each entry within the context
+	// running the map function on each entry
 	for(var i = 0; i < itNb; ++i) {
 		console.log('Running map iteration ' + (i + 1) + '.');
 		data.map(function(entry, index, array) {
-			vm.runInContext(mapFunction, entry);
+			for(var key of Object.keys(entry))
+				sandbox[key] = entry[key];
+
+			vm.runInContext(mapFunction, sandbox);
+
+			for(var key of Object.keys(entry))
+				entry[key] = sandbox[key];
 		});
 	}
 
-	// then we run the reduce function on each entry
+	// pushing output variables to context
+	for(var key of Object.keys(output))
+		sandbox[key] = output[key];
+
+	// running the reduce function on each entry
 	console.log('Running reduce function.');
 	data.map(function(entry, index, array) {
 
-		// pushing output variables to context
-		for(var key of Object.keys(output))
-			entry[key] = output[key];
+		for(var key of Object.keys(entry))
+			sandbox[key] = entry[key];
 
-		vm.runInContext(reduceFunction, entry);
-
-		// pulling output variables from context
-		for(var key of Object.keys(output))
-			output[key] = entry[key];
+		vm.runInContext(reduceFunction, sandbox);
 	});
+
+	// pulling output variables from context
+	for(var key of Object.keys(output))
+		output[key] = sandbox[key];
 
 	output['Total'] = data.length;
 }
@@ -105,7 +115,7 @@ function readXLSXFile(file, range) {
 	var jsonData = [];
 	var k;
 	var tmp;
-	for(var j = 1; j < nbLines + 1; ++j) {
+	for(var j = 1; j < nbLines; ++j) { // warning, there is a fake first line
 		tmp = {};
 		k = 0;
 
@@ -163,14 +173,21 @@ function processSimulationRequest(req, res) {
 			return;
 		}
 
+		// building input structure with virtual machine interpretation
 		var input = {};
-		vm.createContext(input);
-		vm.runInContext(req.body.inputVars, input);
+		vm.runInNewContext(req.body.inputVars, input);
 
+		// building output structure with virtual machine interpretation
 		var output = {};
-		vm.createContext(output);
-		vm.runInContext(req.body.outputVars, output);
+		vm.runInNewContext(req.body.outputVars, output);
 
+		// building map & reduce function 
+		/*
+		var mapFunction = requireFromString('module.exports = ' + req.body.mapFunction);
+		var reduceFunction = requireFromString('module.exports = ' + req.body.reduceFunction);
+		*/
+
+		// processing JSON data
 		processJSON(jsonData, req.body.itNb, input, req.body.mapFunction, output, req.body.reduceFunction);
 		output.time = (new Date().getTime() - beginTime) / 1000;
 
