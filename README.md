@@ -11,7 +11,7 @@
 
 * Go on localhost with your web browser
 * Input file : the xlsx file (or json) that contains data
-* Range in the sheet : represents the set of cells to read
+* Range in the sheet : represents the set of cells to read (you have to include the header)
 * Number of iterations : number of times of the map function is called on each entry
 * Input variables : local variables used by the map or the reduce function but not included in the output
 * Map function : function executed on each entry
