@@ -1,0 +1,26 @@
+{
+  "name": "simulation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.14.1",
+    "multer": "^1.3.0",
+    "xlsx": "^0.8.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Cooya/Agent-Based-Simulation.git"
+  },
+  "author": "Cooya",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Cooya/Agent-Based-Simulation/issues"
+  },
+  "homepage": "https://github.com/Cooya/Agent-Based-Simulation#readme"
+}

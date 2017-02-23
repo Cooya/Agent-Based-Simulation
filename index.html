@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+	<title>Simulation</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+	<script src=""></script>
+</head>
+<body>
+	<div class="container">
+		<div class="row justify-content-center">
+			<h1>Simulation form</h1>
+		</div>
+		<hr>
+		<div class="row justify-content-center">
+			<form class="col-8" method="POST" action="request" enctype="multipart/form-data">
+				<fieldset>
+					<div class="form-group">
+						<label for="inputFile">Input file</label>
+						<input name="inputFile" type="file" class="form-control-file" id="inputFile" aria-describedby="fileHelp" accept=".xlsx, .json" required>
+						<small id="fileHelp" class="form-text text-muted">Formats accepted : xlsx, json.</small>
+					</div>
+					<div class="row">
+						<div class="form-group col-6">
+							<label for="range">Range in the sheet</label>
+							<input name="range" type="text" class="form-control" id="range" value="A1:J500" required>
+						</div>
+						<div class="form-group col-6">
+							<label for="itNb">Number of iterations</label>
+							<input name="itNb" type="number" class="form-control" id="itNb" value=15 required min=1>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="inputVars">Input variables</label>
+						<textarea name="inputVars" class="form-control" rows="5" id="inputVars" required>Brand_Factor = 2;
+Breed_Status = 0;</textarea>
+					</div>
+					<div class="form-group">
+						<label for="mapFunction">Map function</label>
+						<textarea name="mapFunction" class="form-control" rows="10" id="mapFunction" required>Age++;
+if(!Auto_Renew) {
+	Affinity = Payment_at_Purchase/Attribute_Price + (2 * Attribute_Promotions * Inertia_for_Switch);
+	if(Agent_Breed == "Breed_C" && Affinity < (Social_Grade * Attribute_Brand)) {
+		Agent_Breed = "Breed_NC";
+		Breed_Status = 1;
+	}
+	else if(Agent_Breed == "Breed_NC" && Affinity < (Social_Grade * Attribute_Brand * Brand_Factor)) {
+		Agent_Breed = "Breed_C";
+		if(Breed_Status == 0)
+			Breed_Status = 2;
+		else if(Breed_Status == 1)
+			Breed_Status = 3;
+	}
+}</textarea>
+					</div>
+					<div class="form-group">
+						<label for="outputVars">Output variables</label>
+						<textarea name="outputVars" class="form-control" rows="5" id="outputVars" required>Breed_C_Lost = 0;
+Breed_C_Gained = 0;
+Breed_C_Regained = 0;</textarea>
+					</div>
+					<div class="form-group">
+						<label for="reduceFunction">Reduce function</label>
+						<textarea name="reduceFunction" class="form-control" rows="10" id="reduceFunction" required>if(Breed_Status == 1)
+	Breed_C_Lost++;
+else if(Breed_Status == 2)
+	Breed_C_Gained++;
+else if(Breed_Status == 3)
+	Breed_C_Regained++;</textarea>
+					</div>
+					<div class="form-group text-center">
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<script>
+	</script>
+</body>
+
+</html>
