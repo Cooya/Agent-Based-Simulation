@@ -21,6 +21,6 @@
 
 The simulation can take a few seconds according to the number of iterations and the range size.
 
-## Online simulation
+## Online Simulation
 
 * Go on http://nicodev.fr/sim if you do not want to install or download anything
