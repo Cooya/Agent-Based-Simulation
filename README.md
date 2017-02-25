@@ -19,7 +19,7 @@
 * Reduce function : function executed once on each entry after mapping for filling output variables
 * Output : json structure containing output values and runtime duration
 
-The simulation can take a few seconds according to the number of iterations and the range size.
+The simulation can take a few seconds according to the number of iterations and the range size. For 15 iterations and the max range size, it takes about 8 seconds.
 
 ## Online Simulation
 
