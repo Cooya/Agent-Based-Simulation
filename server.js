@@ -70,7 +70,6 @@ function processJSON(data, itNb, input, mapFunction, output, reduceFunction) {
 	// running the reduce function on each entry
 	console.log('Running reduce function.');
 	data.map(function(entry, index, array) {
-
 		for(var key of Object.keys(entry))
 			sandbox[key] = entry[key];
 

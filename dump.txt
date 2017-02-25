@@ -1,0 +1,31 @@
+Brand_Factor = 2;
+Breed_Status = 0;
+
+Age++;
+if(!Auto_Renew) {
+	Affinity = Payment_at_Purchase/Attribute_Price + (2 * Attribute_Promotions * Inertia_for_Switch);
+	if(Agent_Breed == "Breed_C" && Affinity < (Social_Grade * Attribute_Brand)) {
+		Agent_Breed = "Breed_NC";
+		Breed_Status = 1;
+	}
+	else if(Agent_Breed == "Breed_NC" && Affinity < (Social_Grade * Attribute_Brand * Brand_Factor)) {
+		Agent_Breed = "Breed_C";
+		if(Breed_Status == 0)
+			Breed_Status = 2;
+		else if(Breed_Status == 1)
+			Breed_Status = 3;
+	}
+}
+
+
+
+Breed_C_Lost = 0;
+Breed_C_Gained = 0;
+Breed_C_Regained = 0;
+
+if(Breed_Status == 1)
+	Breed_C_Lost++;
+else if(Breed_Status == 2)
+	Breed_C_Gained++;
+else if(Breed_Status == 3)
+	Breed_C_Regained++;
